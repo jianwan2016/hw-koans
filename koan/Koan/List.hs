@@ -1,73 +1,97 @@
 module Koan.List where
 
-import           Prelude hiding (concat, head, init, last, reverse, tail, (++))
-import           Koan.Functor     as K
 import           Koan.Applicative as K
+import           Koan.Functor     as K
 import           Koan.Monad       as K
+import           Prelude          hiding (concat, head, init, last, reverse, tail, (++))
 
 
 enrolled :: Bool
-enrolled = False
+enrolled = True
 
 -- Example:
 --   head [1, 2, 3, 4] = 1
 head :: [a] -> a
-head = error "TODO: implement head"
+head (x:xs) = x
+head []     = error "no elements"
 
 -- Example:
 --   tail [1, 2, 3, 4] = [2, 3, 4]
 tail :: [a] -> [a]
-tail = error "TODO: implement tail"
+tail (x:xs) = xs
 
 -- Example:
 --   last [1, 2, 3, 4] = 4
 last :: [a] -> a
-last = error "TODO: implement last"
+last (x:xs) = case xs of
+  [] -> x
+  _  -> last xs
+last _ = error "No elements"
+
+reverse' :: [a] -> [a] -> [a]
+reverse' acc (x:xs) = reverse' (x:acc) xs
+reverse' acc _      = acc
 
 -- Example:
 --   reverse [1, 2, 3, 4] = [4, 3, 2, 1]
 reverse :: [a] -> [a]
-reverse = error "TODO: implement reverse"
+reverse = reverse' []
+-- reverse = error "TODO: implement reverse"
 
 -- Example:
 --   [1, 2] ++ [3, 4] = [1, 2, 3, 4]
 (++) :: [a] -> [a] -> [a]
-(++) = error "TODO: implement (++)"
+(++) (x:xs) y = x : xs ++ y
+(++) x []     = x
+(++) [] y     = y
+(++) [] []    = []
 
 -- Example:
 --   concat [[1, 2], [3, 4]] = [1, 2, 3, 4]
 concat :: [[a]] -> [a]
-concat = error "TODO: implement concat"
+concat (x:xs) = x ++ concat xs
+concat _      = []
+
+-- tails' :: [[a]] -> [a] -> [[a]]
+-- tails' acc x= tails' (x:acc) (tail x)
+
+-- tails :: [a] -> [[a]]
+-- tails  = tails' [[]]
 
 -- Example:
 --   tails [1, 2, 3] = [[1, 2, 3], [2, 3], [3], []]
 tails :: [a] -> [[a]]
-tails = error "TODO: implement tails"
+tails (x:xs) = (x:xs) : tails xs
+tails _      = [[]]
 
 -- Example:
 --   mapList show [1, 2, 3, 4] = ["1", "2", "3", "4"]
 mapList :: (a -> b) -> [a] -> [b]
-mapList = error "TODO: implement mapList"
+mapList f (x:xs) = f x : mapList f xs
 
 -- Example:
 --   filterList even [1, 2, 3, 4] = [2, 4]
 filterList :: (a -> Bool) -> [a] -> [a]
-filterList = error "TODO: implement filterList"
+filterList f (x:xs) = if f x then x : filterList f xs
+  else filterList f xs
 
 -- Example:
 --   foldlList (+) 0 [1, 2, 3] = 6
 foldlList :: (b -> a -> b) -> b -> [a] -> b
-foldlList = error "TODO: implement foldlList"
+foldlList f acc (x:xs) = foldlList f (f acc x) xs
+foldlList _ acc _      = acc
 
 foldrList :: (a -> b -> b) -> b -> [a] -> b
-foldrList = error "TODO: implement foldlList"
+foldrList f acc (x:xs) = foldrList f (f x acc) xs
+foldrList _ acc _      = acc
 
 -- Note that those are square brackets, not round brackets.
 applyList :: [a -> b] -> [a] -> [b]
-applyList = error "TODO: implement applyList"
+applyList (f:fs) (x:xs) = f x : applyList fs xs
+applyList [] []         = []
 
 bindList :: (a -> [b]) -> [a] -> [b]
-bindList = error "TODO: implement bindList"
+bindList f (x:xs) = f x
 
 instance K.Functor [] where
   fmap = error "TODO: Implement fmap for ([a])"

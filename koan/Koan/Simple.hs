@@ -28,6 +28,7 @@ const = error "TODO: Implement const"
 
 -- This is function composition, i.e. (f . g)(x) == f(g(x))
 (.) :: (b -> c) -> (a -> b) -> a -> c
+-- f . g = \x -> f (g x)
 (.) = error "TODO: Implement (.)"
 
 -- This flips the argument order of a function, i.e.
