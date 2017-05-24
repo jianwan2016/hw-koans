@@ -44,7 +44,6 @@ reverse = reverse' []
 (++) (x:xs) y = x : xs ++ y
 (++) x []     = x
 (++) [] y     = y
-(++) [] []    = []
 
 -- Example:
 --   concat [[1, 2], [3, 4]] = [1, 2, 3, 4]
@@ -74,6 +73,7 @@ mapList f (x:xs) = f x : mapList f xs
 filterList :: (a -> Bool) -> [a] -> [a]
 filterList f (x:xs) = if f x then x : filterList f xs
   else filterList f xs
+filterList _ _ = []
 
 -- Example:
 --   foldlList (+) 0 [1, 2, 3] = 6
@@ -88,7 +88,6 @@ foldrList _ acc _      = acc
 -- Note that those are square brackets, not round brackets.
 applyList :: [a -> b] -> [a] -> [b]
 applyList (f:fs) (x:xs) = f x : applyList fs xs
-applyList [] []         = []
 
 bindList :: (a -> [b]) -> [a] -> [b]
 bindList f (x:xs) = f x
