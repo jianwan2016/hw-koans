@@ -67,6 +67,7 @@ tails _      = [[]]
 --   mapList show [1, 2, 3, 4] = ["1", "2", "3", "4"]
 mapList :: (a -> b) -> [a] -> [b]
 mapList f (x:xs) = f x : mapList f xs
+mapList _ []     = []
 
 -- Example:
 --   filterList even [1, 2, 3, 4] = [2, 4]
@@ -87,10 +88,12 @@ foldrList _ acc _      = acc
 
 -- Note that those are square brackets, not round brackets.
 applyList :: [a -> b] -> [a] -> [b]
-applyList (f:fs) (x:xs) = f x : applyList fs xs
+applyList (f:fs) xs = mapList f xs ++ applyList fs xs
+applyList [] _      = []
 
 bindList :: (a -> [b]) -> [a] -> [b]
-bindList f (x:xs) = f x
+bindList f (x:xs) = f x ++ bindList f xs
+bindList _ []     = []
 
 instance K.Functor [] where
   fmap = error "TODO: Implement fmap for ([a])"
