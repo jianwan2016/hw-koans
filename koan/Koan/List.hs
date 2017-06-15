@@ -7,7 +7,7 @@ import           Prelude          hiding (concat, head, init, last, reverse, tai
 
 
 enrolled :: Bool
-enrolled = True
+enrolled = False
 
 -- Example:
 --   head [1, 2, 3, 4] = 1
@@ -96,11 +96,14 @@ bindList f (x:xs) = f x ++ bindList f xs
 bindList _ []     = []
 
 instance K.Functor [] where
-  fmap = error "TODO: Implement fmap for ([a])"
+  -- fmap = error "TODO: Implement fmap for ([a])"
+  fmap = mapList
 
 instance K.Applicative [] where
-  pure = error "TODO: Implement Applicative pure for []"
-  (<*>) = error "TODO: Implement Applicative (<*>) for []"
+  -- pure = error "TODO: Implement Applicative pure for []"
+  pure a = [a]
+  (<*>) = applyList
 
 instance K.Monad [] where
-  (>>=) = error "TODO: Implement Monad (>>=) for []"
+  -- (>>=) = error "TODO: Implement Monad (>>=) for []"
+  (>>=) = flip bindList
