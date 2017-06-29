@@ -1,12 +1,12 @@
 module Koan.Either where
 
-import           Control.Arrow
+import Control.Arrow
 
-import           Data.Bifunctor
-import           Prelude        hiding (Either (..), either, isLeft, isRight, lefts, rights)
+import Data.Bifunctor
+import Prelude        hiding (Either (..), either, isLeft, isRight, lefts, rights)
 
 enrolled :: Bool
-enrolled = False
+enrolled = True
 
 data Either a b = Left a | Right b
 
