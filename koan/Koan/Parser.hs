@@ -8,7 +8,7 @@ import Data.Semigroup
 import Prelude hiding (fail)
 
 enrolled :: Bool
-enrolled = False
+enrolled = True
 
 data ParseResult a
   = ParseSuccess String a
@@ -16,24 +16,33 @@ data ParseResult a
   deriving (Eq, Show)
 
 instance Functor ParseResult where
-  fmap = error "TODO: Implement fmap for ParseResult"
+  fmap f (ParseSuccess g a) = ParseSuccess g (f a)
+  fmap _ (ParseFailure g)   = ParseFailure g
 
 newtype Parser a = Parser
   { runParser :: String -> ParseResult a
   }
 
 fail :: String -> Parser a
-fail = error "TODO: Implement fail"
+fail msg = Parser (\_ -> ParseFailure msg)
 
 instance Functor Parser where
-  fmap = error "TODO: Implement fmap for Parser"
+  fmap f (Parser run) = Parser (\x -> f <$> run x)
 
 instance Applicative Parser where
-  pure a  = error "TODO: Implement pure for Parser"
-  (<*>)   = error "TODO: Implement (<*>) for Parser"
+  pure a = Parser (`ParseSuccess` a)
+  -- pure a = error "TODO: Implement pure for Parser"
+  -- (<*>)   = error "TODO: Implement (<*>) for Parser"
+  (<*>) (Parser f) (Parser x) = Parser (\s -> case f s of
+    ParseSuccess xx ff-> case x xx of
+      ParseSuccess yy zz -> ParseSuccess yy (ff zz)
+      ParseFailure yy    -> ParseFailure yy
+    ParseFailure xx -> ParseFailure xx)
+  -- Found hole: _u :: Parser (a -> b) -> Parser a -> Parser b
 
 instance Alternative Parser where
-  empty = error "TODO: Implement empty for Parser"
+  empty = Parser (\x -> ParseFailure x)
+  -- empty = error "TODO: Implement empty for Parser"
   (<|>) = error "TODO: Implement (<|>) for Parser"
 
 satisfy :: (Char -> Bool) -> Parser Char
