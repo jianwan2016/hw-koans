@@ -10,7 +10,7 @@ import Text.Megaparsec.String hiding (crlf)
 import qualified Text.Megaparsec.Lexer as L
 
 enrolled :: Bool
-enrolled = False
+enrolled = True
 
 data Json
   = JsonBool    Bool
@@ -46,34 +46,40 @@ braces :: Parser a -> Parser a
 braces = error "TODO Implement braces"
 
 plainChar :: Parser Char
-plainChar = error "TODO Implement plainChar"
+plainChar = undefined
 
 escapedChar :: Parser Char
-escapedChar = error "TODO Implement escapedChar"
+escapedChar = char '\\' *> plainChar
 
 litString :: Parser String
-litString = error "TODO Implement litString"
+litString = char '"' *> many plainChar <* char '"'
 
 litBool :: Parser Bool
-litBool = error "TODO Implement litBool"
+litBool = do
+  bool <- litString
+  case bool of
+    "true" -> return True
+    _      -> return False
 
 comma :: Parser ()
-comma = error "TODO Implement comma"
+comma = char ',' *> return ()
 
 array :: Parser [Json]
-array = error "TODO Implement array"
+array = char '[' *> json `sepBy` char ',' <* char ']'
 
 field :: Parser (String, Json)
-field = error "TODO Implement field"
+-- field = (,) <$> (litString <* char ':') <*> json
+field = (\a b -> (a, b)) <$> (litString <* char ':') <*> json
 
 object :: Parser [(String, Json)]
-object = error "TODO Implement object"
+object = char '{' *>
+  field  `sepBy` char ','
+  <* char '}'
+
+-- object = error "TODO Implement json"
 
 nullKeyword :: Parser ()
-nullKeyword = error "TODO Implement nullKeyword"
-
-number :: Parser Double
-number = error "TODO Implement number"
+nullKeyword = return ()
 
 json :: Parser Json
-json = error "TODO Implement json"
+json = const JsonNull <$> nullKeyword

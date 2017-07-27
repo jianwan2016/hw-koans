@@ -42,7 +42,8 @@ sort (x:xs) = sort (filter (< x) xs) ++ [x] ++ sort (filter (>= x) xs)
 -- supply their own comparison function.
 insert :: Ord a => a -> [a] -> [a]
 -- insert = error "TODO: implement insert"
-insert x xs = l ++ [x] ++ r
-  where
-    let split :: (a->Bool) -> [a] -> ([a], [a]) = 
-    (l, r) = split (<=x) xs
+insert = undefined
+-- insert x xs = l ++ [x] ++ r
+--   where
+--     let split :: (a->Bool) -> [a] -> ([a], [a]) =
+--     (l, r) = split (<=x) xs
